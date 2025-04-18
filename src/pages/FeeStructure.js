@@ -169,7 +169,7 @@ export default function FeeStructure() {
   return (
     <>
       <Helmet>
-        <title> User | Minimal UI </title>
+        <title> User | UE Alignment Portal </title>
       </Helmet>
 
       <Container>

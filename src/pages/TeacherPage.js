@@ -40,9 +40,9 @@ import USERLIST from '../_mock/user';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'teacherName', label: 'Name', alignRight: false },
-  { id: 'qualifications', label: 'Qualifications', alignRight: false },
-  { id: 'regestrationNo', label: 'Registration Number', alignRight: false },
+  { id: 'firstname', label: 'Name', alignRight: false },
+  { id: 'qualification', label: 'Qualification', alignRight: false },
+  { id: 'registrationNo', label: 'Registration Number', alignRight: false },
   { id: 'designation', label: 'Designation', alignRight: false },
   { id: 'session', label: 'session', alignRight: false },
   { id: '' },
@@ -74,7 +74,7 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.teacherName.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_user) => _user.firstname.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
@@ -191,7 +191,7 @@ export default function TeacherPage() {
   return (
     <>
       <Helmet>
-        <title> User | Minimal UI </title>
+        <title> User | UE Alignment Portal </title>
       </Helmet>
 
       <Container>
@@ -225,26 +225,26 @@ export default function TeacherPage() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, teacherName, qualifications, regestrationNo, designation, avatarUrl, session } = row;
-                    const selectedUser = selected.indexOf(teacherName) !== -1;
+                    const { _id, firstname, qualification, registrationNo, designation, avatarUrl, session } = row;
+                    const selectedUser = selected.indexOf(firstname) !== -1;
 
                     return (
                       <TableRow hover key={_id} tabIndex={-1} role="checkbox" selected={selectedUser}>
                         <TableCell padding="checkbox">
-                          {/* <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, teacherName)} /> */}
+                          {/* <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, firstname)} /> */}
                         </TableCell>
 
                         <TableCell component="th" scope="row" padding="none">
                           <Stack direction="row" alignItems="center" spacing={2}>
                             <Typography variant="subtitle2" noWrap>
-                              {teacherName}
+                              {firstname}
                             </Typography>
                           </Stack>
                         </TableCell>
 
-                        <TableCell align="left">{qualifications}</TableCell>
+                        <TableCell align="left">{qualification}</TableCell>
 
-                        <TableCell align="left">{regestrationNo}</TableCell>
+                        <TableCell align="left">{registrationNo}</TableCell>
 
                         <TableCell align="left">{designation}</TableCell>
 

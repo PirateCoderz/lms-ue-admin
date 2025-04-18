@@ -26,7 +26,7 @@ export default function DashboardAppPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard | Minimal UI </title>
+        <title> Dashboard | UE Alignment Portal </title>
       </Helmet>
 
       <Container maxWidth="xl">

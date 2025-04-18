@@ -25,7 +25,7 @@ const gender = [
 ];
 
 const initialValues = {
-  studentName: '',
+  first_name: '',
   fatherName: '',
   courseName: '',
   gender: '',
@@ -33,7 +33,7 @@ const initialValues = {
 
 const EditStudents = ({editStudent, setOpen, setRefetch, refetch }) => {
   const [studentValues, setStudentValues] = useState({
-    studentName: editStudent.studentName,
+    first_name: editStudent.first_name,
     fatherName: editStudent.fatherName,
     courseName: editStudent.courseName,
     gender:editStudent.gender,
@@ -63,7 +63,7 @@ const EditStudents = ({editStudent, setOpen, setRefetch, refetch }) => {
   const validations = (fieldValue = studentValues) => {
     // eslint-disable-next-line prefer-const
     let temp = { ...errors };
-    if ('studentName' in fieldValue) temp.studentName = fieldValue.studentName ? '' : 'This field requires';
+    if ('first_name' in fieldValue) temp.first_name = fieldValue.first_name ? '' : 'This field requires';
     if ('fatherName' in fieldValue) temp.fatherName = fieldValue.fatherName ? '' : 'This field requires';
     if ('courseName' in fieldValue) temp.courseName = fieldValue.courseName ? '' : 'This field requires';
     if ('gender' in fieldValue) temp.gender = fieldValue.gender ? '' : 'This field requires';
@@ -86,14 +86,14 @@ const EditStudents = ({editStudent, setOpen, setRefetch, refetch }) => {
     <Box display={'flex'} flexDirection="column" gap={2} component="form" onSubmit={handleSubmit}>
       <Box gap={2} display={'flex'} justifyContent="space-between">
         <TextField
-          helperText={errors.studentName}
+          helperText={errors.first_name}
           fullWidth
-          name="studentName"
+          name="first_name"
           type="text"
-          value={studentValues.studentName}
+          value={studentValues.first_name}
           label="Student Name"
           onChange={handleChange}
-          error={errors.studentName}
+          error={errors.first_name}
         />
         <TextField
           helperText={errors.fatherName}

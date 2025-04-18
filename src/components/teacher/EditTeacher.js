@@ -44,35 +44,35 @@ const teacherRoomsNumber = [
 const gender = [
   {
     id: 0,
-    genderName: 'Male',
+    gender: 'male',
   },
   {
     id: 1,
-    genderName: 'Female',
+    gender: 'female',
   },
   {
     id: 2,
-    genderName: 'Other',
+    gender: 'other',
   },
 ];
 
 const initialValues = {
-  teacherName: '',
-  fatherName: '',
+  firstname: '',
+  last_name: '',
   teacherRoom: '',
-  qualifications: '',
-  deparment: '',
+  qualification: '',
+  department: '',
   designation: '',
   gender: '',
 };
 
 const EditTeacher = ({ editTeacher, setOpen, setRefetch, refetch }) => {
   const [teacherValues, setTeacherValues] = useState({
-    teacherName: editTeacher.teacherName,
-    fatherName: editTeacher.fatherName,
+    firstname: editTeacher.firstname,
+    last_name: editTeacher.last_name,
     teacherRoom: editTeacher.teacherRoom,
-    qualifications: editTeacher.qualifications,
-    deparment: editTeacher.deparment,
+    qualification: editTeacher.qualification,
+    department: editTeacher.department,
     designation: editTeacher.designation,
     gender: editTeacher.gender,
   });
@@ -103,11 +103,11 @@ const department = useDepartments()
   const validations = (fieldValue = teacherValues) => {
     // eslint-disable-next-line prefer-const
     let temp = { ...errors };
-    if ('teacherName' in fieldValue) temp.teacherName = fieldValue.teacherName ? '' : 'This field requires';
-    if ('fatherName' in fieldValue) temp.fatherName = fieldValue.fatherName ? '' : 'This field requires';
-    if ('qualifications' in fieldValue) temp.qualifications = fieldValue.qualifications ? '' : 'This field requires';
+    if ('firstname' in fieldValue) temp.firstname = fieldValue.firstname ? '' : 'This field requires';
+    if ('last_name' in fieldValue) temp.last_name = fieldValue.last_name ? '' : 'This field requires';
+    if ('qualification' in fieldValue) temp.qualification = fieldValue.qualification ? '' : 'This field requires';
     if ('teacherRoom' in fieldValue) temp.teacherRoom = fieldValue.teacherRoom ? '' : 'This field requires';
-    if ('deparment' in fieldValue) temp.deparment = fieldValue.deparment ? '' : 'This field requires';
+    if ('department' in fieldValue) temp.department = fieldValue.department ? '' : 'This field requires';
     if ('designation' in fieldValue) temp.designation = fieldValue.designation ? '' : 'This field requires';
     if ('gender' in fieldValue) temp.gender = fieldValue.gender ? '' : 'This field requires';
     setErrors({
@@ -129,36 +129,36 @@ const department = useDepartments()
     <Box display={'flex'} flexDirection="column" gap={2} component="form" onSubmit={handleSubmit}>
       <Box gap={2} display={'flex'} justifyContent="space-between">
         <TextField
-          helperText={errors.teacherName}
+          helperText={errors.firstname}
           fullWidth
-          name="teacherName"
+          name="firstname"
           type="text"
           label="Teacher Name"
           onChange={handleChange}
-          value={teacherValues.teacherName}
-          error={errors.teacherName}
+          value={teacherValues.firstname}
+          error={errors.firstname}
         />
         <TextField
-          helperText={errors.fatherName}
+          helperText={errors.last_name}
           fullWidth
-          value={teacherValues.fatherName}
-          name="fatherName"
+          value={teacherValues.last_name}
+          name="last_name"
           type="text"
-          label="Father Name"
+          label="Last Name"
           onChange={handleChange}
-          error={errors.fatherName}
+          error={errors.last_name}
         />
       </Box>
       <Box gap={2} display={'flex'} justifyContent="space-between">
         <TextField
-          value={teacherValues.qualifications}
-          helperText={errors.qualifications}
+          value={teacherValues.qualification}
+          helperText={errors.qualification}
           fullWidth
-          name="qualifications"
+          name="qualification"
           type="text"
-          label="Qualifications"
+          label="Qualification"
           onChange={handleChange}
-          error={errors.qualifications}
+          error={errors.qualification}
         />
 
         <FormControl fullWidth>
@@ -166,19 +166,19 @@ const department = useDepartments()
           <Select
             labelId="demo-simple-select-standard-label"
             id="demo-simple-select-standard"
-            name="deparment"
-            value={teacherValues.deparment}
+            name="department"
+            value={teacherValues.department}
             onChange={handleChange}
-            error={errors.deparment}
+            error={errors.department}
             label="Department"
           >
             {department && department.map((item) => (
-              <MenuItem value={item.courseName} key={item._id}>
-                {item.courseName}
+              <MenuItem value={item.title} key={item._id}>
+                {item.title}
               </MenuItem>
             ))}
           </Select>
-          {errors.deparment && <p style={{ color: 'red', fontSize: '12px', paddingLeft: '5%' }}>{errors.deparment}</p>}
+          {errors.department && <p style={{ color: 'red', fontSize: '12px', paddingLeft: '5%' }}>{errors.department}</p>}
         </FormControl>
         <FormControl fullWidth>
           <InputLabel id="demo-simple-select-standard-label">Teacher Room</InputLabel>
@@ -225,8 +225,8 @@ const department = useDepartments()
             error={errors.gender}
           >
             {gender.map((item) => (
-              <MenuItem value={item.genderName} key={item.id}>
-                {item.genderName}
+              <MenuItem value={item.gender} key={item.id}>
+                {item.gender}
               </MenuItem>
             ))}
           </Select>

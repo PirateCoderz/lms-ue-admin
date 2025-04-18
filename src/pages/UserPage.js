@@ -39,9 +39,9 @@ import USERLIST from '../_mock/user';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'studentName', label: 'Name', alignRight: false },
-  { id: 'courseName', label: 'Degree Programes', alignRight: false },
-  { id: 'regestrationNo', label: 'Registration Number', alignRight: false },
+  { id: 'firstname', label: 'Name', alignRight: false },
+  { id: 'program', label: 'Degree Programes', alignRight: false },
+  { id: 'registrationNo', label: 'Registration Number', alignRight: false },
   { id: 'session', label: 'Session', alignRight: false },
   { id: '', label: '', alignRight: false },
   { id: '' },
@@ -73,7 +73,7 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.studentName.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_user) => _user.firstname.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
@@ -122,7 +122,7 @@ export default function UserPage() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = user.map((n) => n.studentName);
+      const newSelecteds = user.map((n) => n.firstname);
       setSelected(newSelecteds);
       return;
     }
@@ -189,7 +189,7 @@ export default function UserPage() {
   return (
     <>
       <Helmet>
-        <title> User | Minimal UI </title>
+        <title> User | UE Alignment Portal </title>
       </Helmet>
 
       <Container>
@@ -223,27 +223,27 @@ export default function UserPage() {
                 />
                 <TableBody>
                   {filteredUsers?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((row) => {
-                    const { _id, studentName, courseName, regestrationNo, session, rollNo, isVerified } = row;
-                    const selectedUser = selected.indexOf(studentName) !== -1;
+                    const { _id, firstname, program, registrationNo, session, rollNo, isVerified } = row;
+                    const selectedUser = selected.indexOf(firstname) !== -1;
 
                     return (
                       <TableRow hover key={_id} tabIndex={-1} role="checkbox" selected={selectedUser}>
                         <TableCell padding="checkbox">
-                          {/* <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, studentName)} /> */}
+                          {/* <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, firstname)} /> */}
                         </TableCell>
 
                         <TableCell component="th" scope="row" padding="none">
                           <Stack direction="row" alignItems="center" spacing={2}>
-                            {/* <Avatar alt={studentName} src={avatarUrl} /> */}
+                            {/* <Avatar alt={firstname} src={avatarUrl} /> */}
                             <Typography variant="subtitle2" noWrap>
-                              {studentName}
+                              {firstname}
                             </Typography>
                           </Stack>
                         </TableCell>
 
-                        <TableCell>{courseName}</TableCell>
+                        <TableCell>{program}</TableCell>
 
-                        <TableCell>{regestrationNo}</TableCell>
+                        <TableCell>{registrationNo}</TableCell>
 
                         <TableCell>{session}</TableCell>
 

@@ -1,7 +1,6 @@
-/* eslint-disable import/no-unresolved */
+/* eslint-disable react/prop-types */
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
-import { sentenceCase } from 'change-case';
 import { useEffect, useState } from 'react';
 // @mui
 import {
@@ -9,39 +8,39 @@ import {
   Table,
   Stack,
   Paper,
-  Avatar,
   Button,
-  Popover,
-  Checkbox,
   TableRow,
   MenuItem,
   TableBody,
   TableCell,
   Container,
   Typography,
-  IconButton,
   TableContainer,
   TablePagination,
+  FormControl,
+  InputLabel,
+  Select,
 } from '@mui/material';
-// components
-import CustomizedDialogs from 'src/components/custom-pop-up';
-import NewStudents from 'src/components/students/NewStudents';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteStudentById, getAllStudents } from 'src/Redux/slice/user';
-import EditStudents from 'src/components/students/EditStudents';
-import Label from '../components/label';
+import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
+// components
+import CustomizedDialogs from '../components/custom-pop-up';
+// import EditStudents from '../components/students/EditStudents';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
+import NewStudents from '../components/students/NewStudents'; // New Students component
 // sections
-import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
-// mock
-import USERLIST from '../_mock/user';
+// import { UserListHead, UserListToolbar } from '../../sections/@dashboard/user';
+import EditStudents from '../components/students/EditStudents';
+import { deleteStudentById, getAllStudents } from '../Redux/slice/user';
+
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'firstname', label: 'Name', alignRight: false },
-  { id: 'program', label: 'Degree Programes', alignRight: false },
-  { id: 'registrationNo', label: 'Registration Number', alignRight: false },
+  { id: 'studentName', label: 'Name', alignRight: false },
+  { id: 'courseName', label: 'Courses', alignRight: false },
+  
+  { id: 'regestrationNo', label: 'Registration Number', alignRight: false },
   { id: 'session', label: 'Session', alignRight: false },
   { id: '', label: '', alignRight: false },
   { id: '' },
@@ -66,53 +65,34 @@ function getComparator(order, orderBy) {
 }
 
 function applySortFilter(array, comparator, query) {
-  const stabilizedThis = array && array?.map((el, index) => [el, index]);
+  const stabilizedThis = array?.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.firstname.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_user) => _user.studentName.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
 export default function UserPage() {
-  const [open, setOpen] = useState(null);
-
   const [page, setPage] = useState(0);
-
   const [order, setOrder] = useState('asc');
-
   const [selected, setSelected] = useState([]);
-
   const [orderBy, setOrderBy] = useState('name');
-
   const [filterName, setFilterName] = useState('');
-
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
+  const [refetch, setRefetch] = useState(false);
   const [newStudentOpen, setNewStudentOpen] = useState(false);
 
-  const [refetch, setRefetch] = useState(false);
-
   const [editStudent, setEditStudent] = useState();
-
-  const [editStudentOpen, setEditStudentOpen] = useState();
+  const [editStudentOpen, setEditStudentOpen] = useState(false);
 
   const dispatch = useDispatch();
-
   const user = useSelector((s) => s.user?.data);
-  console.log('user==>', user);
-
-  const handleOpenMenu = (event) => {
-    setOpen(event.currentTarget);
-  };
-
-  const handleCloseMenu = () => {
-    setOpen(null);
-  };
+  const department = useSelector((s) => s.department?.data);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -122,7 +102,7 @@ export default function UserPage() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = user.map((n) => n.firstname);
+      const newSelecteds = user.map((n) => n.studentName);
       setSelected(newSelecteds);
       return;
     }
@@ -158,19 +138,19 @@ export default function UserPage() {
     setFilterName(event.target.value);
   };
 
-  console.log(USERLIST);
-
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - user.length) : 0;
 
   const filteredUsers = applySortFilter(user, getComparator(order, orderBy), filterName);
 
   const isNotFound = !filteredUsers.length && !!filterName;
+
   const getAllUsers = async () => {
     const res = await dispatch(getAllStudents());
     if (res) {
       setRefetch(true);
     }
   };
+
   const handleDelete = async (id) => {
     const res = await dispatch(deleteStudentById(id));
     if (res.payload) {
@@ -182,6 +162,7 @@ export default function UserPage() {
     setEditStudent(item);
     setEditStudentOpen(true);
   };
+
   useEffect(() => {
     getAllUsers();
   }, [refetch, dispatch]);
@@ -189,13 +170,13 @@ export default function UserPage() {
   return (
     <>
       <Helmet>
-        <title> User | UE Alignment Portal </title>
+        <title> Student | UE </title>
       </Helmet>
 
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Student
+            Students
           </Typography>
           <Button
             variant="contained"
@@ -222,46 +203,42 @@ export default function UserPage() {
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredUsers?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((row) => {
-                    const { _id, firstname, program, registrationNo, session, rollNo, isVerified } = row;
-                    const selectedUser = selected.indexOf(firstname) !== -1;
+                  {filteredUsers
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row) => {
+                      const { _id, studentName, courseName, regestrationNo, session, rollNo, isVerified } = row;
+                      const selectedUser = selected.indexOf(studentName) !== -1;
 
-                    return (
-                      <TableRow hover key={_id} tabIndex={-1} role="checkbox" selected={selectedUser}>
-                        <TableCell padding="checkbox">
-                          {/* <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, firstname)} /> */}
-                        </TableCell>
+                      return (
+                        <TableRow hover key={_id} tabIndex={-1} role="checkbox" selected={selectedUser}>
+                          <TableCell padding="checkbox" />
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack direction="row" alignItems="center" spacing={2}>
+                              <Typography variant="subtitle2" noWrap>
+                                {studentName}
+                              </Typography>
+                            </Stack>
+                          </TableCell>
+                          <TableCell align="left">
+                            {/* Display courses as comma-separated list */}
+                            {Array.isArray(courseName) ? courseName.join(', ') : courseName}
+                          </TableCell>
+                          <TableCell>{regestrationNo}</TableCell>
+                          <TableCell>{session}</TableCell>
 
-                        <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="row" alignItems="center" spacing={2}>
-                            {/* <Avatar alt={firstname} src={avatarUrl} /> */}
-                            <Typography variant="subtitle2" noWrap>
-                              {firstname}
-                            </Typography>
-                          </Stack>
-                        </TableCell>
-
-                        <TableCell>{program}</TableCell>
-
-                        <TableCell>{registrationNo}</TableCell>
-
-                        <TableCell>{session}</TableCell>
-
-
-                        <TableCell sx={{ display: 'flex' }} align="right">
-                          <MenuItem onClick={() => handleEdit(row)}>
-                            <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-                            Edit
-                          </MenuItem>
-
-                          <MenuItem sx={{ color: 'error.main' }} onClick={() => handleDelete(_id)}>
-                            <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-                            Delete
-                          </MenuItem>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
+                          <TableCell sx={{ display: 'flex' }} align="right">
+                            <MenuItem onClick={() => handleEdit(row)}>
+                              <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
+                              Edit
+                            </MenuItem>
+                            <MenuItem sx={{ color: 'error.main' }} onClick={() => handleDelete(_id)}>
+                              <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
+                              Delete
+                            </MenuItem>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
                       <TableCell colSpan={6} />
@@ -273,15 +250,10 @@ export default function UserPage() {
                   <TableBody>
                     <TableRow>
                       <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                        <Paper
-                          sx={{
-                            textAlign: 'center',
-                          }}
-                        >
+                        <Paper sx={{ textAlign: 'center' }}>
                           <Typography variant="h6" paragraph>
                             Not found
                           </Typography>
-
                           <Typography variant="body2">
                             No results found for &nbsp;
                             <strong>&quot;{filterName}&quot;</strong>.
@@ -295,6 +267,7 @@ export default function UserPage() {
               </Table>
             </TableContainer>
           </Scrollbar>
+
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
@@ -307,34 +280,6 @@ export default function UserPage() {
         </Card>
       </Container>
 
-      <Popover
-        open={Boolean(open)}
-        anchorEl={open}
-        onClose={handleCloseMenu}
-        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{
-          sx: {
-            p: 1,
-            width: 140,
-            '& .MuiMenuItem-root': {
-              px: 1,
-              typography: 'body2',
-              borderRadius: 0.75,
-            },
-          },
-        }}
-      >
-        {/* <MenuItem>
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Edit
-        </MenuItem> */}
-
-        {/* <MenuItem sx={{ color: 'error.main' }} onClick={()=>handleDelete(_id)}>
-          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-          Delete
-        </MenuItem> */}
-      </Popover>
       <CustomizedDialogs title="Add New Student" open={newStudentOpen} setOpen={setNewStudentOpen}>
         <NewStudents refetch={refetch} setRefetch={setRefetch} setOpen={setNewStudentOpen} />
       </CustomizedDialogs>

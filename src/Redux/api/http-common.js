@@ -3,6 +3,7 @@ import axios from "axios";
 // const API_URL = "http://192.168.1.9:8080";
 const API_URL = "http://localhost:5000";
 
+console.log("api is called")
 export const callAPi = axios.create({
   baseURL: API_URL,
   headers: {

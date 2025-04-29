@@ -23,7 +23,7 @@ export default function ProductsPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Products | UE Alignment Portal </title>
+        <title> Dashboard: Products | UE </title>
       </Helmet>
 
       <Container>

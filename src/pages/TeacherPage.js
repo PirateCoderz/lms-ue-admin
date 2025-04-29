@@ -1,7 +1,6 @@
-/* eslint-disable import/no-unresolved */
+/* eslint-disable react/prop-types */
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
-import { sentenceCase } from 'change-case';
 import { useEffect, useState } from 'react';
 // @mui
 import {
@@ -24,27 +23,25 @@ import {
   TablePagination,
 } from '@mui/material';
 // components
-import CustomizedDialogs from 'src/components/custom-pop-up';
-import NewTeacher from 'src/components/teacher/NewTeacher';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteTeacherById, getAllTeachers } from 'src/Redux/slice/teacher';
-import EditTeacher from 'src/components/teacher/EditTeacher';
+import CustomizedDialogs from '../components/custom-pop-up';
+import NewTeacher from '../components/teacher/NewTeacher';
+import { deleteTeacherById, getAllTeachers } from '../Redux/slice/teacher';
+import EditTeacher from '../components/teacher/EditTeacher';
 import Label from '../components/label';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
 // sections
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
-// mock
-import USERLIST from '../_mock/user';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'firstname', label: 'Name', alignRight: false },
-  { id: 'qualification', label: 'Qualification', alignRight: false },
-  { id: 'registrationNo', label: 'Registration Number', alignRight: false },
+  { id: 'teacherName', label: 'Name', alignRight: false },
+  { id: 'qualifications', label: 'Qualifications', alignRight: false },
+  { id: 'regestrationNo', label: 'Registration Number', alignRight: false },
   { id: 'designation', label: 'Designation', alignRight: false },
-  { id: 'session', label: 'session', alignRight: false },
+  { id: 'courses', label: 'Courses', alignRight: false },  // Updated to show courses
   { id: '' },
 ];
 
@@ -74,39 +71,27 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.firstname.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_user) => _user.teacherName.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
 export default function TeacherPage() {
   const [open, setOpen] = useState(null);
-
   const [page, setPage] = useState(0);
-
   const [order, setOrder] = useState('asc');
-
   const [selected, setSelected] = useState([]);
-
   const [orderBy, setOrderBy] = useState('name');
-
   const [filterName, setFilterName] = useState('');
-
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
   const [refetch, setRefetch] = useState();
-
   const [newTeacherOpen, setNewTeacherOpen] = useState(false);
-
-  const [editTeacher, setEditTeacher] = useState()
-
-  const [editTeacherOpen, setEditTeacherOpen] = useState()
+  const [editTeacher, setEditTeacher] = useState();
+  const [editTeacherOpen, setEditTeacherOpen] = useState(false);
 
   const dispatch = useDispatch();
-
   const teacher = useSelector((s) => s.teacher?.data);
 
-  console.log('user==>', teacher);
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };
@@ -123,7 +108,7 @@ export default function TeacherPage() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = teacher.map((n) => n.name);
+      const newSelecteds = teacher.map((n) => n.teacherName);
       setSelected(newSelecteds);
       return;
     }
@@ -191,13 +176,13 @@ export default function TeacherPage() {
   return (
     <>
       <Helmet>
-        <title> User | UE Alignment Portal </title>
+        <title>Teachers | UE</title>
       </Helmet>
 
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Teacher
+            Teachers
           </Typography>
           <Button
             variant="contained"
@@ -225,33 +210,36 @@ export default function TeacherPage() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, firstname, qualification, registrationNo, designation, avatarUrl, session } = row;
-                    const selectedUser = selected.indexOf(firstname) !== -1;
+                    const { _id, teacherName, qualifications, regestrationNo, designation, courses } = row;
+                    const selectedUser = selected.indexOf(teacherName) !== -1;
 
                     return (
                       <TableRow hover key={_id} tabIndex={-1} role="checkbox" selected={selectedUser}>
                         <TableCell padding="checkbox">
-                          {/* <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, firstname)} /> */}
+                          {/* <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, teacherName)} /> */}
                         </TableCell>
 
                         <TableCell component="th" scope="row" padding="none">
                           <Stack direction="row" alignItems="center" spacing={2}>
                             <Typography variant="subtitle2" noWrap>
-                              {firstname}
+                              {teacherName}
                             </Typography>
                           </Stack>
                         </TableCell>
 
-                        <TableCell align="left">{qualification}</TableCell>
+                        <TableCell align="left">{qualifications}</TableCell>
 
-                        <TableCell align="left">{registrationNo}</TableCell>
+                        <TableCell align="left">{regestrationNo}</TableCell>
 
                         <TableCell align="left">{designation}</TableCell>
 
-                        <TableCell align="left">{session}</TableCell>
+                        <TableCell align="left">
+                          {/* Display courses as comma-separated values */}
+                          {courses.join(", ")}
+                        </TableCell>
 
-                        <TableCell sx={{display:"flex"}} align="right">
-                          <MenuItem onClick={()=>handleEdit(row)}>
+                        <TableCell sx={{ display: "flex" }} align="right">
+                          <MenuItem onClick={() => handleEdit(row)}>
                             <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
                             Edit
                           </MenuItem>
@@ -310,34 +298,6 @@ export default function TeacherPage() {
         </Card>
       </Container>
 
-      {/* <Popover
-        open={Boolean(open)}
-        anchorEl={open}
-        onClose={handleCloseMenu}
-        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{
-          sx: {
-            p: 1,
-            width: 140,
-            '& .MuiMenuItem-root': {
-              px: 1,
-              typography: 'body2',
-              borderRadius: 0.75,
-            },
-          },
-        }}
-      >
-        <MenuItem>
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Edit
-        </MenuItem>
-
-        <MenuItem sx={{ color: 'error.main' }}>
-          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-          Delete
-        </MenuItem>
-      </Popover> */}
       <CustomizedDialogs title="Add New Teacher" open={newTeacherOpen} setOpen={setNewTeacherOpen}>
         <NewTeacher refetch={refetch} setRefetch={setRefetch} setOpen={setNewTeacherOpen} />
       </CustomizedDialogs>

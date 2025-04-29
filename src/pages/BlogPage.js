@@ -21,7 +21,7 @@ export default function BlogPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Blog | UE Alignment Portal </title>
+        <title> Dashboard: Blog | UE </title>
       </Helmet>
 
       <Container>

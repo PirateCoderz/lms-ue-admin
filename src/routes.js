@@ -23,10 +23,10 @@ export default function Router() {
       children: [
         { path: 'user', element: <UserPage /> },
         { path: 'teacher', element: <TeacherPage /> },
-        { path: 'merit-list', element: <MeritListPage /> },
-        { path: 'fee-structure', element: <FeeStructure /> },
+        // { path: 'merit-list', element: <MeritListPage /> },
+        // { path: 'fee-structure', element: <FeeStructure /> },
         { path: 'departments', element: <Departments /> },
-        { path: 'time-table', element: <Timetable /> },
+        // { path: 'time-table', element: <Timetable /> },
       ],
     },
     {

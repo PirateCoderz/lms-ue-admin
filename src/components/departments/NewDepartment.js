@@ -35,7 +35,7 @@ const NewDepartment = ({ setOpen, setRefetch, refetch }) => {
   const validations = (fieldValue = departmentValues) => {
     // eslint-disable-next-line prefer-const
     let temp = { ...errors };
-    if ('title' in fieldValue) temp.first_name = fieldValue.title ? '' : 'This field requires';
+    if ('title' in fieldValue) temp.studentName = fieldValue.title ? '' : 'This field requires';
     if ('courseName' in fieldValue) temp.courseName = fieldValue.courseName ? '' : 'This field requires';
     setErrors({
       ...temp,

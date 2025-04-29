@@ -1,4 +1,4 @@
-## Minimal [(Free version)](https://minimal-kit-react.vercel.app/)
+## UE [(Free version)](https://minimal-kit-react.vercel.app/)
 
 ![license](https://img.shields.io/badge/license-MIT-blue.svg)
 
@@ -6,7 +6,7 @@
 
 ![preview](public/assets/preview.jpg)
 
-| [Minimal Free](https://minimal-kit-react.vercel.app/) | [Minimal](https://material-ui.com/store/items/minimal-dashboard/) |
+| [UE Free](https://minimal-kit-react.vercel.app/) | [UE](https://material-ui.com/store/items/minimal-dashboard/) |
 | ----------------------------------------------------- | :---------------------------------------------------------------- |
 | **6** Demo pages                                      | **50+** demo pages                                                |
 | -                                                     | ✓ Multi-language                                                  |

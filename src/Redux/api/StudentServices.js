@@ -6,6 +6,8 @@ const deleteStudentById = (id) => callAPi.delete(`/api/students/deleteStudentByI
 const editStudentById = (id, data) => callAPi.patch(`/api/students/updateStudentById/${id}`, data);
 
 
+
+
 const StudentServices = {
   createStudent,
   getAllStudents,

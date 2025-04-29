@@ -9,7 +9,6 @@ import {
   Stack,
   Paper,
   Button,
-  Checkbox,
   TableRow,
   MenuItem,
   TableBody,
@@ -22,24 +21,20 @@ import {
 // components
 import CustomizedDialogs from 'src/components/custom-pop-up';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteMeritListById, getAllMeritList } from 'src/Redux/slice/meritList';
-import UploadFee from 'src/components/feeStructure/UploadFee';
-import { deleteFeeStructuretById, getAllFeeStructure } from 'src/Redux/slice/feeStructure';
-import NewDepartment from 'src/components/departments/NewDepartment';
 import { deleteDepartmentById, getAllDepartments } from 'src/Redux/slice/department';
+import NewDepartment from 'src/components/departments/NewDepartment';
 import EditDepartment from 'src/components/departments/EditDepartment';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
 // sections
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
-// mock
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'title', label: 'Name', alignRight: false },
-  { id: 'courseName', label: 'Degree Programes', alignRight: false },
- { id: '' },
+  { id: 'courseName', label: 'Courses', alignRight: false },
+  { id: '' },
 ];
 
 // ----------------------------------------------------------------------
@@ -75,32 +70,18 @@ function applySortFilter(array, comparator, query) {
 
 export default function Departments() {
   const [page, setPage] = useState(0);
-
   const [order, setOrder] = useState('asc');
-
   const [selected, setSelected] = useState([]);
-
   const [orderBy, setOrderBy] = useState('name');
-
   const [filterName, setFilterName] = useState('');
-
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
   const [refetch, setRefetch] = useState();
-
   const [newDepartmentOpen, setNewDepartmentOpen] = useState(false);
-
-  const [editDepartment, setEditDepartment] = useState()
-
-  const [editDepartmentOpen, setEditDepartmentOpen] = useState()
+  const [editDepartment, setEditDepartment] = useState();
+  const [editDepartmentOpen, setEditDepartmentOpen] = useState(false);
 
   const dispatch = useDispatch();
-
-  // const feeStructure = useSelector((s) => s.feeStructure?.data);
-
-  const department = useSelector((s)=> s.department?.data)
-
-  console.log('deparment==>', department);
+  const department = useSelector((s) => s.department?.data);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -110,7 +91,7 @@ export default function Departments() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = department.map((n) => n.name);
+      const newSelecteds = department.map((n) => n.title);
       setSelected(newSelecteds);
       return;
     }
@@ -154,15 +135,15 @@ export default function Departments() {
 
   const getAllDepartment = async () => {
     const res = await dispatch(getAllDepartments());
-    console.log(res)
     if (res) {
       setRefetch(true);
     }
   };
+
   const handleEdit = (item) => {
-    setEditDepartment(item)
-    setEditDepartmentOpen(true)
-  }
+    setEditDepartment(item);
+    setEditDepartmentOpen(true);
+  };
 
   const handleDelete = async (id) => {
     const res = await dispatch(deleteDepartmentById(id));
@@ -178,7 +159,7 @@ export default function Departments() {
   return (
     <>
       <Helmet>
-        <title> User | UE Alignment Portal </title>
+        <title>Departments | UE</title>
       </Helmet>
 
       <Container>
@@ -211,39 +192,39 @@ export default function Departments() {
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { _id, courseName, title, file } = row;
-                    const selectedUser = selected.indexOf(title) !== -1;
+                  {filteredUsers
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row) => {
+                      const { _id, courseName, title } = row;
+                      const selectedUser = selected.indexOf(title) !== -1;
 
-                    return (
-                      <TableRow hover key={_id} tabIndex={-1} role="checkbox" selected={selectedUser}>
-                        <TableCell padding="checkbox">
-                          {/* <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, title)} /> */}
-                        </TableCell>
-
-                        <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="row" alignItems="center" spacing={2}>
-                            <Typography variant="subtitle2" noWrap>
-                              {title}
-                            </Typography>
-                          </Stack>
-                        </TableCell>
-
-                        <TableCell align="left">{courseName}</TableCell>
-                        <TableCell sx={{display:"flex"}} align="right">
-                          <MenuItem onClick={()=>handleEdit(row)}>
-                            <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-                            Edit
-                          </MenuItem>
-
-                          <MenuItem sx={{ color: 'error.main' }} onClick={() => handleDelete(_id)}>
-                            <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-                            Delete
-                          </MenuItem>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
+                      return (
+                        <TableRow hover key={_id} tabIndex={-1} role="checkbox" selected={selectedUser}>
+                          <TableCell padding="checkbox" />
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack direction="row" alignItems="center" spacing={2}>
+                              <Typography variant="subtitle2" noWrap>
+                                {title}
+                              </Typography>
+                            </Stack>
+                          </TableCell>
+                          <TableCell align="left">
+                            {/* Display course names as a list or joined with commas */}
+                            {Array.isArray(courseName) ? courseName.join(", ") : courseName}
+                          </TableCell>
+                          <TableCell sx={{ display: "flex" }} align="right">
+                            <MenuItem onClick={() => handleEdit(row)}>
+                              <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
+                              Edit
+                            </MenuItem>
+                            <MenuItem sx={{ color: 'error.main' }} onClick={() => handleDelete(_id)}>
+                              <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
+                              Delete
+                            </MenuItem>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
                       <TableCell colSpan={6} />
@@ -255,15 +236,10 @@ export default function Departments() {
                   <TableBody>
                     <TableRow>
                       <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                        <Paper
-                          sx={{
-                            textAlign: 'center',
-                          }}
-                        >
+                        <Paper sx={{ textAlign: 'center' }}>
                           <Typography variant="h6" paragraph>
                             Not found
                           </Typography>
-
                           <Typography variant="body2">
                             No results found for &nbsp;
                             <strong>&quot;{filterName}&quot;</strong>.
@@ -290,8 +266,8 @@ export default function Departments() {
         </Card>
       </Container>
 
-      <CustomizedDialogs title="Add New Depatrment" open={newDepartmentOpen} setOpen={setNewDepartmentOpen}>
-        <NewDepartment refetch={refetch} setRefetch={setRefetch} setOpen={setNewDepartmentOpen}/>
+      <CustomizedDialogs title="Add New Department" open={newDepartmentOpen} setOpen={setNewDepartmentOpen}>
+        <NewDepartment refetch={refetch} setRefetch={setRefetch} setOpen={setNewDepartmentOpen} />
       </CustomizedDialogs>
       <CustomizedDialogs title="Edit Department" open={editDepartmentOpen} setOpen={setEditDepartmentOpen}>
         <EditDepartment editDepartment={editDepartment} refetch={refetch} setRefetch={setRefetch} setOpen={setEditDepartmentOpen} />

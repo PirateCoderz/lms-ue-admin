@@ -168,7 +168,7 @@ export default function MeritListPage() {
   return (
     <>
       <Helmet>
-        <title> User | UE Alignment Portal </title>
+        <title> User | UE </title>
       </Helmet>
 
       <Container>

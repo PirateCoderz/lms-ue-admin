@@ -1,141 +1,19 @@
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
-import React, { useState } from 'react';
+/* eslint-disable react/prop-types */
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField, Chip, Stack } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
 import { useDispatch } from 'react-redux';
-// eslint-disable-next-line import/no-unresolved
-import { createTeacher } from 'src/Redux/slice/teacher';
-// eslint-disable-next-line import/no-unresolved
-import useDepartments from 'src/hooks/useDepartments';
-// import Button from 'src/theme/overrides/Button'
+import { createTeacher } from '../../Redux/slice/teacher';
+import useDepartments from '../../hooks/useDepartments';
 
-const degreeProgrames = [
-  {
-    id: 0,
-    qualifications: 'BSCS',
-  },
-  {
-    id: 1,
-    qualifications: 'BSIT',
-  },
-  {
-    id: 2,
-    qualifications: 'BSSE',
-  },
-  {
-    id: 3,
-    qualifications: 'BS MATH',
-  },
-  {
-    id: 4,
-    qualifications: 'BS PHYSICS',
-  },
-  {
-    id: 5,
-    qualifications: 'BS CHEMISTRY',
-  },
-  {
-    id: 6,
-    qualifications: 'BS POLITICAL SCIECNCE',
-  },
-];
-
-const teacherRoomsNumber = [
-  {
-    id: 0,
-    room: '1',
-  },
-  {
-    id: 1,
-    room: '2',
-  },
-  {
-    id: 2,
-    room: '3',
-  },
-  {
-    id: 3,
-    room: '4',
-  },
-  {
-    id: 4,
-    room: '5',
-  },
-  {
-    id: 5,
-    room: '6',
-  },
-  {
-    id: 6,
-    room: '7',
-  },
-  {
-    id: 7,
-    room: '8',
-  },
-  {
-    id: 8,
-    room: '9',
-  },
-  {
-    id: 9,
-    room: '10',
-  },
-  {
-    id: 10,
-    room: '11',
-  },
-  {
-    id: 10,
-    room: '11',
-  },
-  {
-    id: 11,
-    room: '12',
-  },
-  {
-    id: 12,
-    room: '13',
-  },
-  {
-    id: 13,
-    room: '14',
-  },
-  {
-    id: 14,
-    room: '15',
-  },
-  {
-    id: 15,
-    room: '16',
-  },
-  {
-    id: 16,
-    room: '17',
-  },
-  {
-    id: 17,
-    room: '18',
-  },
-  {
-    id: 18,
-    room: '19',
-  },
-  {
-    id: 19,
-    room: '20',
-  },
-  {
-    id: 20,
-    room: '21',
-  },
-  {
-    id: 21,
-    room: '22',
-  },
-  {
-    id: 22,
-    room: '23',
-  },
-];
+const initialValues = {
+  teacherName: '',
+  qualifications: '',
+  deparment: '',
+  designation: '',
+  gender: '',
+  courses: [], // Add courses as an array
+};
 
 const gender = [
   {
@@ -152,55 +30,68 @@ const gender = [
   },
 ];
 
-const initialValues = {
-  teacherName: '',
-  fatherName: '',
-  teacherRoom: '',
-  qualifications: '',
-  deparment: '',
-  designation: '',
-  gender: '',
-};
-
 const NewTeacher = ({ setOpen, setRefetch, refetch }) => {
   const [teacherValues, setTeacherValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
+  const [courseNameInput, setCourseNameInput] = useState('');
+  const [availableCourses, setAvailableCourses] = useState([]);
   const dispatch = useDispatch();
-  const department = useDepartments()
+  const department = useDepartments(); // Get department data
 
+  // Whenever the department changes, filter and show related courses
+  useEffect(() => {
+    if (teacherValues.deparment) {
+      const selectedDepartment = department.find((dept) => dept.title === teacherValues.deparment);
+      if (selectedDepartment) {
+        setAvailableCourses(selectedDepartment.courseName || []);
+      }
+    }
+  }, [teacherValues.deparment, department]);
+
+  // Handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (validations()) {
-      console.log('values', teacherValues);
       try {
+        // Dispatch the createTeacher action from Redux
         const res = await dispatch(createTeacher(teacherValues));
-        if (res.payload.data) {
-          setTeacherValues(initialValues);
-          setRefetch(!refetch);
-          setOpen(false);
+
+        if (res.payload && res.payload.data) {
+          setTeacherValues(initialValues); // Reset the form
+          setRefetch(!refetch); // Trigger refetch to update data
+          setOpen(false); // Close the modal
+
+          // Show success alert
+          Swal.fire({
+            title: 'Success!',
+            text: 'Teacher created successfully!',
+            icon: 'success',
+            confirmButtonText: 'OK',
+          }).then(() => {
+            setOpen(false); // Close the modal after confirmation
+            window.location.reload(); // Refresh the page after confirmation
+          });
         }
       } catch (error) {
         console.log(error);
       }
     }
   };
+
+  // Form validation
   const validations = (fieldValue = teacherValues) => {
-    // eslint-disable-next-line prefer-const
-    let temp = { ...errors };
-    if ('teacherName' in fieldValue) temp.teacherName = fieldValue.teacherName ? '' : 'This field requires';
-    if ('fatherName' in fieldValue) temp.fatherName = fieldValue.fatherName ? '' : 'This field requires';
-    if ('qualifications' in fieldValue) temp.qualifications = fieldValue.qualifications ? '' : 'This field requires';
-    if ('teacherRoom' in fieldValue) temp.teacherRoom = fieldValue.teacherRoom ? '' : 'This field requires';
-    if ('deparment' in fieldValue) temp.deparment = fieldValue.deparment ? '' : 'This field requires';
-    if ('designation' in fieldValue) temp.designation = fieldValue.designation ? '' : 'This field requires';
-    if ('gender' in fieldValue) temp.gender = fieldValue.gender ? '' : 'This field requires';
-    setErrors({
-      ...temp,
-    });
+    const temp = { ...errors };
+    if ('teacherName' in fieldValue) temp.teacherName = fieldValue.teacherName ? '' : 'This field is required';
+    if ('qualifications' in fieldValue) temp.qualifications = fieldValue.qualifications ? '' : 'This field is required';
+    if ('deparment' in fieldValue) temp.deparment = fieldValue.deparment ? '' : 'This field is required';
+    if ('designation' in fieldValue) temp.designation = fieldValue.designation ? '' : 'This field is required';
+    if ('gender' in fieldValue) temp.gender = fieldValue.gender ? '' : 'This field is required';
+    setErrors({ ...temp });
     return Object.values(temp).every((x) => x === '');
   };
 
+  // Handle field change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setTeacherValues({
@@ -208,6 +99,25 @@ const NewTeacher = ({ setOpen, setRefetch, refetch }) => {
       [name]: value,
     });
     validations({ [name]: value });
+  };
+
+  // Handle adding courses
+  const handleAddCourse = () => {
+    if (courseNameInput.trim() && !teacherValues.courses.includes(courseNameInput.trim())) {
+      setTeacherValues({
+        ...teacherValues,
+        courses: [...teacherValues.courses, courseNameInput.trim()],
+      });
+      setCourseNameInput('');
+    }
+  };
+
+  // Handle removing a course
+  const handleRemoveCourse = (course) => {
+    setTeacherValues({
+      ...teacherValues,
+      courses: teacherValues.courses.filter((item) => item !== course),
+    });
   };
 
   return (
@@ -221,19 +131,10 @@ const NewTeacher = ({ setOpen, setRefetch, refetch }) => {
           label="Teacher Name"
           onChange={handleChange}
           value={teacherValues.teacherName}
-          error={errors.teacherName}
-        />
-        <TextField
-          helperText={errors.fatherName}
-          fullWidth
-          value={teacherValues.fatherName}
-          name="fatherName"
-          type="text"
-          label="Father Name"
-          onChange={handleChange}
-          error={errors.fatherName}
+          error={Boolean(errors.teacherName)} // Convert error message to boolean for `error` prop
         />
       </Box>
+
       <Box gap={2} display={'flex'} justifyContent="space-between">
         <TextField
           value={teacherValues.qualifications}
@@ -243,9 +144,10 @@ const NewTeacher = ({ setOpen, setRefetch, refetch }) => {
           type="text"
           label="Qualifications"
           onChange={handleChange}
-          error={errors.qualifications}
+          error={Boolean(errors.qualifications)} // Convert error message to boolean for `error` prop
         />
 
+        {/* Department dropdown */}
         <FormControl fullWidth>
           <InputLabel id="demo-simple-select-standard-label">Department</InputLabel>
           <Select
@@ -254,39 +156,22 @@ const NewTeacher = ({ setOpen, setRefetch, refetch }) => {
             name="deparment"
             value={teacherValues.deparment}
             onChange={handleChange}
-            error={errors.deparment}
+            error={Boolean(errors.deparment)} // Convert error message to boolean for `error` prop
             label="Department"
           >
-            {department && department?.map((item) => (
-              <MenuItem value={item.courseName} key={item._id}>
-                {item.courseName}
-              </MenuItem>
-            ))}
+            {department &&
+              department.map((item) => (
+                <MenuItem value={item.title} key={item._id}>
+                  {item.title}
+                </MenuItem>
+              ))}
           </Select>
-          {errors.deparment && <p style={{ color: 'red', fontSize: '12px', paddingLeft: '5%' }}>{errors.deparment}</p>}
-        </FormControl>
-        <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-standard-label">Teacher Room</InputLabel>
-          <Select
-            labelId="demo-simple-select-standard-label"
-            id="demo-simple-select-standard"
-            name="teacherRoom"
-            value={teacherValues.teacherRoom}
-            onChange={handleChange}
-            error={errors.teacherRoom}
-            label="teacherRoom"
-          >
-            {teacherRoomsNumber.map((item) => (
-              <MenuItem value={item.room} key={item.id}>
-                {item.room}
-              </MenuItem>
-            ))}
-          </Select>
-          {errors.teacherRoom && (
-            <p style={{ color: 'red', fontSize: '12px', paddingLeft: '5%' }}>{errors.teacherRoom}</p>
+          {errors.deparment && (
+            <p style={{ color: 'red', fontSize: '12px', paddingLeft: '5%' }}>{errors.deparment}</p>
           )}
         </FormControl>
       </Box>
+
       <Box gap={2} display={'flex'} justifyContent="space-between">
         <TextField
           helperText={errors.designation}
@@ -296,8 +181,10 @@ const NewTeacher = ({ setOpen, setRefetch, refetch }) => {
           label="Designation"
           value={teacherValues.designation}
           onChange={handleChange}
-          error={errors.designation}
+          error={Boolean(errors.designation)} // Convert error message to boolean for `error` prop
         />
+
+        {/* Gender dropdown */}
         <FormControl fullWidth>
           <InputLabel id="demo-simple-select-standard-label">Gender</InputLabel>
           <Select
@@ -307,7 +194,7 @@ const NewTeacher = ({ setOpen, setRefetch, refetch }) => {
             value={teacherValues.gender}
             onChange={handleChange}
             label="Gender"
-            error={errors.gender}
+            error={Boolean(errors.gender)} // Convert error message to boolean for `error` prop
           >
             {gender.map((item) => (
               <MenuItem value={item.genderName} key={item.id}>
@@ -318,6 +205,44 @@ const NewTeacher = ({ setOpen, setRefetch, refetch }) => {
           {errors.gender && <p style={{ color: 'red', fontSize: '12px', paddingLeft: '5%' }}>{errors.gender}</p>}
         </FormControl>
       </Box>
+
+      {/* Courses Selection */}
+      <Box gap={2} display={'flex'} flexDirection="column">
+        {/* Dropdown to select a course */}
+        <FormControl fullWidth>
+          <InputLabel id="select-course-label">Select Course</InputLabel>
+          <Select
+            labelId="select-course-label"
+            id="select-course"
+            value={courseNameInput}
+            onChange={(e) => setCourseNameInput(e.target.value)}
+            label="Select Course"
+          >
+            {availableCourses.map((course, index) => (
+              <MenuItem value={course} key={index}>
+                {course}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <Button onClick={handleAddCourse} variant="outlined">
+          Add Course
+        </Button>
+
+        {/* Display selected courses as Chips */}
+        <Stack direction="row" spacing={1} mt={2}>
+          {teacherValues.courses.map((course, index) => (
+            <Chip
+              key={index}
+              label={course}
+              onDelete={() => handleRemoveCourse(course)}
+              color="primary"
+            />
+          ))}
+        </Stack>
+      </Box>
+
       <Box display={'flex'} justifyContent="flex-end">
         <Button type="submit" variant="contained">
           Save

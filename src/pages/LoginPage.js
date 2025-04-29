@@ -51,7 +51,7 @@ export default function LoginPage() {
   return (
     <>
       <Helmet>
-        <title> Login | GGCSF Admin </title>
+        <title> Login | UE Admin </title>
       </Helmet>
 
       <StyledRoot>
@@ -76,7 +76,7 @@ export default function LoginPage() {
         <Container maxWidth="sm">
           <StyledContent>
             <Typography variant="h4" gutterBottom>
-              Sign in to GGCSF Admin
+              Sign in to UE Admin
             </Typography>
             <Divider sx={{ my: 3 }} />
             <LoginForm />

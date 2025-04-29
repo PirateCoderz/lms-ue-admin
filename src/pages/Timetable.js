@@ -188,7 +188,7 @@ export default function Timetable() {
   return (
     <>
       <Helmet>
-        <title> User | UE Alignment Portal </title>
+        <title> User | UE </title>
       </Helmet>
 
       <Container>

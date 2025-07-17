@@ -1,40 +1,132 @@
-## UE [(Free version)](https://minimal-kit-react.vercel.app/)
+# 🎓 LMS UE Admin – Dashboard by Pirate Coderz ⚓
 
-![license](https://img.shields.io/badge/license-MIT-blue.svg)
+A modern, responsive admin dashboard for a University LMS system — built with **React**, **Redux Toolkit**, and **Material UI**.
 
-> Free React Admin Dashboard made with Material-UI components and React.
+This dashboard allows university administrators to manage departments, students, teachers, assignments, fee structures, timetables, and more.  
+Built with clean architecture, reusable components, and production-ready linting & formatting.
 
-![preview](public/assets/preview.jpg)
+> 👨‍💻 Developed with ❤️ by [Ahmad Raza](https://www.linkedin.com/in/ahmad-raza0) under **Pirate Coderz**
 
-| [UE Free](https://minimal-kit-react.vercel.app/) | [UE](https://material-ui.com/store/items/minimal-dashboard/) |
-| ----------------------------------------------------- | :---------------------------------------------------------------- |
-| **6** Demo pages                                      | **50+** demo pages                                                |
-| -                                                     | ✓ Multi-language                                                  |
-| -                                                     | ✓ Dark/Light Mode 🌓                                              |
-| -                                                     | ✓ [More components](https://minimals.cc/components)               |
-| -                                                     | ✓ Next.js version                                                 |
-| -                                                     | ✓ TypeScript version                                              |
-| -                                                     | ✓ Design files (Figma & Sketch)                                   |
+---
 
-## Page demo
+## ⚙️ Tech Stack
 
-- [Dashboard](https://minimal-kit-react.vercel.app/dashboard/app)
-- [Users](https://minimal-kit-react.vercel.app/dashboard/user)
-- [Product](https://minimal-kit-react.vercel.app/dashboard/products)
-- [Blog](https://minimal-kit-react.vercel.app/dashboard/blog)
-- [Login](https://minimal-kit-react.vercel.app/login)
-- [Not Found](https://minimal-kit-react.vercel.app/404)
+- ⚛️ React 18
+- 🎯 Redux Toolkit
+- 💅 Material UI 5
+- 📦 Axios
+- 📁 CSV to JSON Import
+- 📊 ApexCharts + Chart Cards
+- 🔐 Form Validation with React Hook Form
+- ☁️ Cloudinary File Upload
+- 🍞 React Toastify
+- 🧼 ESLint + Prettier (Airbnb config)
 
-## Getting started
+---
 
-- Recommended `node js 16.x` and `npm 6+`. (suggestion v16.15.0)
-- Install dependencies: `npm install` / `yarn install`
-- Start the project: `npm run start` / `yarn start`
+## 📁 Folder Structure
 
-## License
+```
 
-Distributed under the MIT License. See [LICENSE](https://github.com/minimal-ui-kit/minimal.free/blob/main/LICENSE.md) for more information.
+lms-ue-admin/
+├── src/
+│   ├── assets/
+│   ├── components/
+│   ├── features/        # Redux slices & async logic
+│   ├── layouts/
+│   ├── pages/
+│   ├── sections/        # Views like dashboard, users, assignments
+│   ├── services/        # Axios wrappers
+│   ├── utils/           # Helper functions
+│   └── App.jsx
+├── public/
+├── .eslintrc
+└── package.json
 
-## Contact us
+````
 
-Email Us: support@minimals.cc
+---
+
+## 🚀 Setup & Run
+
+```bash
+# Clone the repo
+git clone https://github.com/piratecoderz/lms-ue-admin.git
+cd lms-ue-admin
+
+# Install dependencies
+yarn install 
+
+# Start dev server
+yarn start
+````
+
+---
+
+## ✅ Key Features
+
+* 🧑‍🎓 **Student Management** – add, edit, view, bulk import
+* 👨‍🏫 **Teacher Management**
+* 🏢 **Department CRUD**
+* 🧾 **Assignment + Quiz Upload/Tracking**
+* 📚 **Material Upload (Cloudinary)**
+* 📅 **Timetable Builder**
+* 🪙 **Fee Structure per Department**
+* 📈 **Merit List UI**
+* 📦 **CSV Upload Support**
+* ✨ **Dark/Light Mode UI Toggle**
+* 🎨 **Fully Responsive Dashboard**
+
+---
+
+## 🔒 Linting & Formatting
+
+This project uses:
+
+* `eslint-config-airbnb`
+* `prettier` integration
+* Custom `.eslintrc` rules
+
+Run:
+
+```bash
+yarn lint        # Check code style
+yarn lint:fix    # Auto-fix issues
+```
+
+---
+
+## 🧠 Scripts
+
+```json
+"scripts": {
+  "start": "react-scripts start",
+  "build": "react-scripts build",
+  "test": "react-scripts test",
+  "eject": "react-scripts eject",
+  "lint": "eslint --ext .js,.jsx ./src",
+  "lint:fix": "eslint --fix --ext .js,.jsx ./src",
+  "clear-all": "rm -rf build node_modules",
+  "re-start": "rm -rf build node_modules && yarn install && yarn start",
+  "re-build": "rm -rf build node_modules && yarn install && yarn build"
+}
+```
+
+---
+
+## 📜 License
+
+This project is licensed under the **Apache 2.0 License**.
+See [LICENSE](./LICENSE) for full details.
+
+---
+
+## 🧠 Author
+
+**Ahmad Raza** – Frontend Engineer
+💻 [LinkedIn](https://www.linkedin.com/in/ahmad-raza0)
+⚓ Founder of Pirate Coderz
+
+> Let’s connect. If your current dashboard feels clunky or unscalable — **let’s talk about building one that actually works** 🚀
+
+---
